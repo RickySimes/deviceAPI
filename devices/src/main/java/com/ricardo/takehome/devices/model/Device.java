@@ -32,4 +32,12 @@ public class Device {
 
   @Column(updatable = false)
   private Instant creationTime = Instant.now();
+
+  public boolean canBeDeleted() {
+    return state != DeviceState.IN_USE;
+  }
+
+  public boolean canUpdateNameAndBrand() {
+    return state != DeviceState.IN_USE;
+  }
 }
