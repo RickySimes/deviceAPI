@@ -10,6 +10,21 @@ REST API for managing device inventory with state-based business rules.
   - Validation with detailed error responses
   - OpenAPI documentation
 
+## Tech Stack
+
+ - Java 21
+ - Spring Boot 3.5.4
+ - Spring Data JPA
+ - PostgreSQL 16
+ - Maven
+ - Docker & Docker Compose
+
+ ## Prerequisites
+
+ - Java 21+
+ - Maven 3.9+ (or use included Maven Wrapper)
+ - Docker & Docker Compose (for containerized deployment)
+
  ## Quick Start
   docker-compose up
 
