@@ -2,6 +2,7 @@ package com.ricardo.takehome.devices.controller;
 
 import com.ricardo.takehome.devices.dto.CreateDeviceRequest;
 import com.ricardo.takehome.devices.dto.DeviceResponse;
+import com.ricardo.takehome.devices.dto.ErrorResponse;
 import com.ricardo.takehome.devices.dto.UpdateDeviceRequest;
 import com.ricardo.takehome.devices.model.Device;
 import com.ricardo.takehome.devices.model.DeviceState;
@@ -9,9 +10,12 @@ import com.ricardo.takehome.devices.service.DeviceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/devices")
@@ -59,6 +63,27 @@ public class DeviceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         deviceService.delete(id);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException ex) {
+        ErrorResponse error = new ErrorResponse("CONFLICT", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
+        ErrorResponse error = new ErrorResponse("NOT_FOUND", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        ErrorResponse error = new ErrorResponse("BAD_REQUEST", message);
+        return ResponseEntity.badRequest().body(error);
     }
 
 

@@ -43,7 +43,7 @@ class DeviceServiceTest {
 
     @Test
     void shouldSaveDevice() {
-        CreateDeviceRequest request = new CreateDeviceRequest("Test Device","Test Brand",DeviceState.AVAILABLE);
+        CreateDeviceRequest request = new CreateDeviceRequest("Test Device", "Test Brand", DeviceState.AVAILABLE);
         when(deviceRepository.save(any(Device.class))).thenReturn(sampleDevice);
 
         Device result = deviceService.create(request);
