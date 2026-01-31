@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class DeviceService {
+
   private final DeviceRepository deviceRepository;
 
   public Device create(CreateDeviceRequest request){
@@ -74,7 +75,7 @@ public class DeviceService {
 
   public void delete(Long id){
     Device device = getById(id);
-    if (device.getState() == DeviceState.IN_USE) {
+    if (!device.canBeDeleted()) {
       throw new IllegalStateException("Cannot delete a device that is in use");
     }
     deviceRepository.deleteById(id);
