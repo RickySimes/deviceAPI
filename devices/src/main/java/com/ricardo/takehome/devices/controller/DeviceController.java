@@ -7,6 +7,8 @@ import com.ricardo.takehome.devices.dto.UpdateDeviceRequest;
 import com.ricardo.takehome.devices.model.Device;
 import com.ricardo.takehome.devices.model.DeviceState;
 import com.ricardo.takehome.devices.service.DeviceService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,23 +22,27 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/devices")
 @RequiredArgsConstructor
+@Tag(name = "Device API", description = "Device management operations")
 public class DeviceController {
     private final DeviceService deviceService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new device")
     public DeviceResponse create(@Valid @RequestBody CreateDeviceRequest request) {
         Device device = deviceService.create(request);
         return toResponse(device);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get device by ID")
     public DeviceResponse getById(@PathVariable Long id) {
         Device device = deviceService.getById(id);
         return toResponse(device);
     }
 
     @GetMapping
+    @Operation(summary = "Get all devices with optional filters")
     public List<DeviceResponse> getAll(@RequestParam(required = false) String brand, @RequestParam(required = false) DeviceState state) {
         List<Device> devices;
         if (brand != null) {
@@ -52,6 +58,7 @@ public class DeviceController {
     }
 
     @PatchMapping("/{id}")
+    @Operation(summary = "Update a device")
     public DeviceResponse update(
             @PathVariable Long id,
             @RequestBody UpdateDeviceRequest request) {
@@ -61,6 +68,7 @@ public class DeviceController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete a device")
     public void delete(@PathVariable Long id) {
         deviceService.delete(id);
     }
