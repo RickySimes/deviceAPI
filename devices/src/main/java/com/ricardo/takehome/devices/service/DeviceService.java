@@ -51,8 +51,10 @@ public class DeviceService {
     Device device = getById(id);
 
     if (!device.canUpdateNameAndBrand()) {
-      if (!device.getName().equals(request.name()) ||
-          !device.getBrand().equals(request.brand())) {
+      boolean nameChanging = request.name() != null && !device.getName().equals(request.name());
+      boolean brandChanging = request.brand() != null && !device.getBrand().equals(request.brand());
+
+      if (nameChanging || brandChanging) {
         throw new IllegalStateException("Cannot update name or brand of a device that is in use");
       }
     }
